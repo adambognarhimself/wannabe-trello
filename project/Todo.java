@@ -12,6 +12,15 @@ import java.util.List;
 
 public class Todo {
     List<Task> tasks;
+    List<Task> completed;
+
+    public List<Task> getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(List<Task> completed) {
+        this.completed = completed;
+    }
 
     public List<Task> getTasks() {
         return tasks;
@@ -23,6 +32,7 @@ public class Todo {
 
     public Todo(){
         tasks = new ArrayList<>();
+        completed = new ArrayList<>();
     }
 
     public void add(Task t){
@@ -38,6 +48,7 @@ public class Todo {
         add(t2);
     }
 
+    //filter by priority, shows the tasks with the corresponding priorities
     public List<Task> filterByPriority(int priority){
         List<Task> filtered = new ArrayList<>();
 
@@ -49,6 +60,7 @@ public class Todo {
         return filtered;
     }
 
+    //sort by date in a given categotry
     public List<Task> sortByDate(String category){
         List<Task> sorted = new ArrayList<>();
 
@@ -63,6 +75,7 @@ public class Todo {
         return sorted;
     }
 
+    //lists the tasks with expired dates
     public List<Task> getOverdueTasks(){
         List<Task> overdue = new ArrayList<>();
 
@@ -76,12 +89,42 @@ public class Todo {
 
         return overdue;
     }
-
+    //move from one catgory to another
     public void moveTask(Task t, String category){
         tasks.remove(t);
         t.setCategory(category);
         tasks.add(t);
 
+    }
+
+    public void markAsCompleted(Task t){
+        completed.add(t);
+    }
+
+    public void deleteCompleted(){
+        for (Task item : completed) {
+            for (Task item2 : tasks) {
+                if(item.equals(item2)){
+                    tasks.remove(item2);
+                    completed.remove(item);
+                }
+            }
+        }
+    }
+
+    public void undoCompleted(Task t){
+        completed.remove(t);
+    }
+
+    public List<Task> listByKeyWord(String word){
+        List<Task> contains = new ArrayList<>();
+
+        for (Task task : tasks) {
+            if(task.getName().contains(word)){
+                contains.add(task);
+            }
+        }
+        return contains;
     }
 
     public void saveToFile(){
