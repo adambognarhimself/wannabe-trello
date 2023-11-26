@@ -1,9 +1,9 @@
-package project;
+package project.main;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
-class Task implements Serializable{
+public class Task implements Serializable{
     private String table;
     //The name of the task
     private String name;

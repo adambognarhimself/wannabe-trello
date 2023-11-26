@@ -1,4 +1,4 @@
-package project;
+package project.main;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,15 +12,8 @@ import java.util.List;
 
 public class Todo {
     List<Task> tasks;
-    List<Task> completed;
 
-    public List<Task> getCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(List<Task> completed) {
-        this.completed = completed;
-    }
+    
 
     public List<Task> getTasks() {
         return tasks;
@@ -32,7 +25,6 @@ public class Todo {
 
     public Todo(){
         tasks = new ArrayList<>();
-        completed = new ArrayList<>();
     }
 
     public void add(Task t){
@@ -60,20 +52,7 @@ public class Todo {
         return filtered;
     }
 
-    //sort by date in a given categotry
-    public List<Task> sortByDate(String category){
-        List<Task> sorted = new ArrayList<>();
-
-        for (Task item : tasks) {
-            if(item.getCategory().equals(category)){
-                sorted.add(item);
-            }
-        }
-
-        sorted.sort((t1,t2) -> t1.getDate().compareTo(t2.getDate()));
-
-        return sorted;
-    }
+   
 
     //lists the tasks with expired dates
     public List<Task> getOverdueTasks(){
@@ -82,7 +61,7 @@ public class Todo {
         LocalDate current = LocalDate.now();
 
         for (Task item : tasks) {
-            if(item.getDate().isAfter(current)){
+            if(item.getDate().isBefore(current)){
                 overdue.add(item);
             }
         }
@@ -97,24 +76,34 @@ public class Todo {
 
     }
 
-    public void markAsCompleted(Task t){
-        completed.add(t);
+   
+
+    public void extendDate(Task t,int n){
+        t.setDate(t.getDate().plusDays(n));
     }
 
-    public void deleteCompleted(){
-        for (Task item : completed) {
-            for (Task item2 : tasks) {
-                if(item.equals(item2)){
-                    tasks.remove(item2);
-                    completed.remove(item);
-                }
+    public void deleteTable(String name){
+        for (Task task : tasks) {
+            if(task.getTable().equals(name)){
+                tasks.remove(task);
             }
         }
     }
 
-    public void undoCompleted(Task t){
-        completed.remove(t);
+    public List<Task> getTodayTasks(){
+        List<Task> todayTasks = new ArrayList<>();
+    
+        LocalDate today = LocalDate.now();
+    
+        for (Task item : tasks) {
+            if(item.getDate().isEqual(today)){
+                todayTasks.add(item);
+            }
+        }
+        return todayTasks;
     }
+
+  
 
     public List<Task> listByKeyWord(String word){
         List<Task> contains = new ArrayList<>();
