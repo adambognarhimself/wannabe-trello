@@ -119,6 +119,8 @@ class Window extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 
 						String name = tableName.getText();
+
+						if(!table.contains(name)){
 						table.add(name);
 						JTable jtable = new JTable();
 						JPanel tabPanel = new JPanel();
@@ -131,6 +133,9 @@ class Window extends JFrame {
 						jTables.add(jtable);
 
 						tabbedpane.add(name, tabPanel);
+						}else{
+							JOptionPane.showMessageDialog(addTableFrame, "This table already exists");
+						}
 
 						addTableFrame.dispose();
 					}
@@ -167,11 +172,14 @@ class Window extends JFrame {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						try {
+
 							String tablename = tablefField.getText();
 							String name = nameField.getText();
 							int priority = Integer.parseInt(priorityField.getText());
 							LocalDate date = LocalDate.parse(dateField.getText());
 							String category = categoryField.getText();
+
+							if(table.contains(tablename)){
 
 							Task newTask = new Task(tablename, name, priority, date, category);
 
@@ -179,9 +187,14 @@ class Window extends JFrame {
 
 							int index = table.indexOf(tablename);
 							datas.get(index).add(newTask);
+						}else{
+							JOptionPane.showMessageDialog(dialogFrame, "There is no such table");
+						}
 
 							dialogFrame.dispose();
 						} catch (NumberFormatException | java.time.format.DateTimeParseException ex) {
+							JOptionPane.showMessageDialog(dialogFrame, "Invalid input. Please check your data.");
+						} catch(IndexOutOfBoundsException ex){
 							JOptionPane.showMessageDialog(dialogFrame, "Invalid input. Please check your data.");
 						}
 					}
@@ -215,6 +228,21 @@ class Window extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				int selectedTabIndex = tabbedpane.getSelectedIndex();
+				if (selectedTabIndex == -1) {
+					JOptionPane.showMessageDialog(Window.this, "Please select a table.");
+					return;
+				}
+
+				JTable selectedTable = jTables.get(selectedTabIndex);
+				int selectedRow = selectedTable.getSelectedRow();
+
+				if (selectedRow == -1) {
+					JOptionPane.showMessageDialog(Window.this, "Please select a task to edit.");
+					return;
+				}
+
 				int selectedindex = tabbedpane.getSelectedIndex();
 				String tablename = table.get(selectedindex);
 				Task selectedTask = getSelectedTask(tablename, selectedindex);
@@ -582,6 +610,10 @@ deleteTableButton.addActionListener(new ActionListener() {
             // Remove the selected table and its associated tasks
             String tableName = table.get(selectedTabIndex);
             table.remove(selectedTabIndex);
+
+			for (var item : datas.get(selectedTabIndex).tasks) {
+				todo.remove(item);
+			}
             datas.remove(selectedTabIndex);
             jTables.remove(selectedTabIndex);
             tabbedpane.remove(selectedTabIndex);
